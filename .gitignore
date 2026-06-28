@@ -1,5 +1,11 @@
 __pycache__/
 *.pyc
+
+# packaging / build artifacts
+build/
+dist/
+*.egg-info/
+.pytest_cache/
 cot_human_gold.json
 cot_rater_kit.html
 results.jsonl

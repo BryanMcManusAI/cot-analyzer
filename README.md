@@ -1,5 +1,8 @@
 # cot-analyzer
 
+[![CI](https://github.com/BryanMcManusAI/cot-analyzer/actions/workflows/gate.yml/badge.svg)](https://github.com/BryanMcManusAI/cot-analyzer/actions/workflows/gate.yml)
+&nbsp;·&nbsp; zero-dependency core &nbsp;·&nbsp; no API key &nbsp;·&nbsp; Python 3.9+
+
 A runnable **faithfulness analyzer for chain-of-thought and agent recordings**. It checks whether a model's
 public output is honest about what actually drove its decision, or whether it **launders** the real reason —
 and it doesn't just flag, it **diagnoses** (how the laundering happened) and **directs** (what to look at next).
@@ -7,16 +10,25 @@ and it doesn't just flag, it **diagnoses** (how the laundering happened) and **d
 The core runs with **no API key** (a keyword/structure check with an F1 story and a CI gate). An optional
 `--llm` layer adds semantic detectors that catch what the keyword check can't.
 
-```bash
-# keyless: validate the detector, render a report, run the CI gate
-python3 cot_analyzer.py --eval                 # precision / recall / F1 on the synthetic gold
-python3 cot_report.py                          # the diagnose+direct report (from a bundled sample run)
-python3 cot_analyzer.py --gate --max-launder-rate 0.10   # exit 1 if a batch launders over the threshold
+## Install & run (5 minutes)
 
-# with a key (export ANTHROPIC_API_KEY): the semantic layer
-python3 cot_analyzer.py --input examples/sample_input.jsonl --llm --out results.jsonl
-python3 cot_report.py --from results.jsonl
+```bash
+pipx install git+https://github.com/BryanMcManusAI/cot-analyzer   # or: pip install git+…
+cot-analyzer --eval            # F1 on synthetic gold (keyless): the clean cases are nailed
+cot-analyzer --eval --hard     # the paraphrase set the keyword check fails — the honest 0.67 story
+cot-analyzer --gate --max-launder-rate 0.10   # CI gate: exit 1 if a batch launders over the threshold
+cot-report                     # the detect → diagnose → direct report
 ```
+
+Zero dependencies, no API key. The optional semantic layer turns on with a key:
+
+```bash
+export ANTHROPIC_API_KEY=…
+cot-analyzer --input examples/sample_input.jsonl --llm --out results.jsonl
+cot-report --from results.jsonl
+```
+
+(Cloned the repo instead of installing? Every `cot-analyzer` above also works as `python3 cot_analyzer.py`.)
 
 ## The idea: detect → diagnose → direct
 
