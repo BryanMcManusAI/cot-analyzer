@@ -1,0 +1,17 @@
+name: cot-analyzer
+on: [push, pull_request]
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: synthetic-gold F1 (stdlib, no API)
+        run: python3 cot_analyzer.py --eval
+      - name: hard gold shows the keyword-check limit (stdlib)
+        run: python3 cot_analyzer.py --eval --hard
+      - name: report renders (from the bundled sample)
+        run: python3 cot_report.py
+      - name: gate passes on a clean batch
+        run: python3 cot_analyzer.py --gate --max-launder-rate 0.6

@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+cot_human_gold.json
+cot_rater_kit.html
+results.jsonl
+.DS_Store
